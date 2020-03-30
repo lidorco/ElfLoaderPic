@@ -1,0 +1,6 @@
+#! /bin/bash
+echo building 32 bit PIC...
+gcc -m32  ../src/main.c  -fno-pie
+echo done
+
+
