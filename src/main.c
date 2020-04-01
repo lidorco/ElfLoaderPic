@@ -19,15 +19,21 @@ void logger(char* msg, unsigned int msg_length) {
 
 
 __attribute__ ((section(".pic_code")))
-__attribute__((fastcall))
 void asd_string(){
 
-    asm(".byte 0x61");
-    asm(".byte 0x62");
-    asm(".byte 0x63");
-
+    asm(".ascii \"this is asm string\n\"");
+    asm(".byte 0x00");
 }
 
+__attribute__ ((section(".pic_code")))
+unsigned int strlen( const char *s )
+{
+    unsigned int n = 0;
+
+    while ( s[n] ) ++n;
+
+    return n;
+}
 
 __attribute__ ((section(".pic_code")))
 void entry_point()
@@ -36,9 +42,7 @@ void entry_point()
 
     global.log_function = logger;
 
-    global.log_function("asd\n", 4);
-
-    asd_string();
+    global.log_function((char*)asd_string, strlen((char*)asd_string));
 }
 
 

@@ -1,6 +1,8 @@
 #! /bin/bash
 echo building 32 bit PIC...
-gcc -m32  ../src/main.c  -fno-pie
+# 
+# -fomit-frame-pointer - remove the "push ebp; mov esp ebp;"  at begging of any function
+gcc -m32  ../src/main.c  -fno-pie -fomit-frame-pointer
 echo done
 
 
