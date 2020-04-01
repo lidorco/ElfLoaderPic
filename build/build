@@ -1,8 +1,9 @@
 #! /bin/bash
 echo building 32 bit PIC...
-# 
-# -fomit-frame-pointer - remove the "push ebp; mov esp ebp;"  at begging of any function
-gcc -m32  ../src/main.c  -fno-pie -fomit-frame-pointer
+# -fno-pie - remove the default __x86_get_pc_thunk_bx - loads the position of the code into the %ebx register.
+# -fomit-frame-pointer - remove the "push ebp; mov esp ebp;"  at beginning of any function.
+# -T linker_script - it order the linker which function to put at the beginning of the pic_code segment.
+gcc -m32  ../src/main.c  -fno-pie -fomit-frame-pointer -T ../build/linker_script
 echo done
 
 

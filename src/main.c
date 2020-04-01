@@ -21,7 +21,7 @@ void logger(char* msg, unsigned int msg_length) {
 __attribute__ ((section(".pic_code")))
 void asd_string(){
 
-    asm(".ascii \"this is asm string\n\"");
+    asm(".ascii \"this is asd string\n\"");
     asm(".byte 0x00");
 }
 
@@ -35,7 +35,7 @@ unsigned int strlen( const char *s )
     return n;
 }
 
-__attribute__ ((section(".pic_code")))
+__attribute__ ((section(".pic_code.ENTRY_POINT")))
 void entry_point()
 {
     struct pic_globals global;
