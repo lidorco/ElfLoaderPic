@@ -17,22 +17,47 @@ void logger(char* msg, unsigned int msg_length) {
     asm("int $0x80");
 }
 
+__attribute__ ((section(".pic_code")))
+void* get_eip()
+{
+    asm ("pop %eax;"
+         "push %eax;"
+         "ret");
+}
+
 
 __attribute__ ((section(".pic_code")))
-void asd_string(){
+char* asd_string(){
+    unsigned int absolute_address_of_mov_instruction = 0;
+    void *mov_address_pointer, *str_start_pointer;
 
+mov_address:
+    absolute_address_of_mov_instruction = get_eip();
+    int a=0;
+    if(++a>0) goto end;
+
+str_start:
     asm(".ascii \"this is asd string\n\"");
     asm(".byte 0x00");
+
+end:
+    mov_address_pointer = &&mov_address;
+    str_start_pointer = &&str_start;
+    unsigned int bytes_until_str_start = str_start_pointer - mov_address_pointer;
+
+    return absolute_address_of_mov_instruction - 5 + bytes_until_str_start; // minus 5 because call get_eip() is 5 bytes instruction
 }
 
 __attribute__ ((section(".pic_code")))
-unsigned int strlen( const char *s )
+unsigned int strlen(const char *str)
 {
-    unsigned int n = 0;
-
-    while ( s[n] ) ++n;
-
-    return n;
+    for (unsigned int i = 0; ; i++)
+    {
+        if (str[i] == '\0')
+        {
+            return i;
+        }
+    }
 }
 
 __attribute__ ((section(".pic_code.ENTRY_POINT")))
@@ -42,7 +67,8 @@ void entry_point()
 
     global.log_function = logger;
 
-    global.log_function((char*)asd_string, strlen((char*)asd_string));
+
+    global.log_function(asd_string(), strlen(asd_string()));
 }
 
 
