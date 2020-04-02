@@ -60,37 +60,6 @@ unsigned int strlen(const char *str)
     }
 }
 
-
-__attribute__ ((section(".pic_code")))
-void* get_function_absolute_address(void* f)
-{
-    unsigned int absolute_address = 0;
-    void* extra_bytes_start_pointer;
-    void* function_call_pointer;
-    void (*function)() = f;
-
-extra_bytes_start:
-    absolute_address = get_eip();
-    int a=0;
-    if(++a>0) goto end;
-
-function_call:
-    function();
-
-end:
-    extra_bytes_start_pointer = &&extra_bytes_start;
-    function_call_pointer = &&function_call;
-
-    unsigned int bytes_until_function_call = function_call_pointer - extra_bytes_start_pointer;
-
-    signed int relative_address = (absolute_address - 5) + bytes_until_function_call + 1;
-
-    signed int function_call_absolute_address = (absolute_address - 5) + bytes_until_function_call + 5;
-
-    return (void*)(relative_address + function_call_absolute_address);
-}
-
-
 #define GET_FUNCTION_ABSOLUTE_ADDRESS(function, result) { \
                                                 signed int function##_var_eip = (signed int)get_eip(); /* 4 bytes*/ \
                                                 int a=0;/* 8 bytes*/ if(++a>0) goto function##_after_call; /*mov-8 add-5 cmp-5 jg-2*/\

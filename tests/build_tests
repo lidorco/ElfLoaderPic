@@ -1,0 +1,4 @@
+#! /bin/bash
+echo compile tests...
+gcc -m32 -g ./pic_runner.c -o runner_test
+../build/build

@@ -34,7 +34,7 @@ void aligned_free(void *p)
 void run_pic_from_buffer(void* pic_buffer, size_t pic_size)
 {
     int errnum;
-    printf("length %d", pic_size);
+
     if ( 0 != mprotect(pic_buffer, pic_size, PROT_READ | PROT_EXEC))
     {
         errnum = errno;
@@ -85,11 +85,11 @@ void run_pic_from_file(char* file_name)
         fprintf(stderr, "read failed! (%d) : %s\n", errnum, strerror(errnum));
         return;
     }
-    printf("%s", (char*)file_contents);
+
 
     run_pic_from_buffer(file_contents, pic_size);
 
-    //free(file_contents);
+    aligned_free(file_contents);
 }
 
 int main(int argc, char** argv)
